@@ -21,7 +21,8 @@ module.exports = generators.Base.extend({
 
         for (var i = 0; i < this.subTestFolders.length; i++) {
         	this._writeTestFiles(this.subTestFolders[i]);
-        }        
+        }
+        
     },
     _getFilePath: function() {
     	var locationOfFile = this.realCWD;
@@ -53,6 +54,10 @@ module.exports = generators.Base.extend({
     	    this._getFileWithoutExt() +
     	    testFolderEndName;
 
-    	this.fs.write(testPath, 'Write a test');
+    	this.fs.copyTpl(
+    	    this.templatePath(testFolderEndName + '.js'),
+    	    this.destinationPath(testPath  + '.js'),
+    	    { filename: this._getFileWithoutExt() }
+    	);
     }
 });
