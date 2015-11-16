@@ -1,6 +1,5 @@
 var generators = require('yeoman-generator');
 var path = require('path');
-var editor = require('mem-fs-editor');
 var mkdirp = require('mkdirp');
 
 module.exports = generators.Base.extend({
