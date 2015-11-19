@@ -7,7 +7,7 @@ Before you start this
 `npm install -g yo bower grunt-cli gulp`
 
 
-2) You need to put a .yo-rc.json file at the root at the project you want to test. It need to have and empty object {} inside of it.
+2) You need to put a .yo-rc.json file at the root of the project you want to test. It will need to have and empty object {} inside of it.
 
 3) npm link the node module
 
