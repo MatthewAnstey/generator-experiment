@@ -11,6 +11,8 @@ Before you start this
 
 3) npm link the node module
 
+`npm link`
+
 4) Go into the directory of the file you want to test and do
 
 `yo jasmine-test file-you-want-to-test.js`
