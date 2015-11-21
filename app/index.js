@@ -30,13 +30,6 @@ module.exports = generators.Base.extend({
 
     	return skinPath + '/' + this._getTestFolder();
     },
-    _getFileArray: function (path) {
-    	var pathArray = path.split('/');
-
-    	pathArray.shift();
-
-    	return pathArray;
-    },
     _getFileWithoutExt: function () {
     	var fileLength = this.file.length;
     	return this.file.substring(0, fileLength - 3);
