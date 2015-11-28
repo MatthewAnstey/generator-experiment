@@ -1,59 +1,93 @@
 var generators = require('yeoman-generator');
 var path = require('path');
-var editor = require('mem-fs-editor');
 var mkdirp = require('mkdirp');
-
+var fs = require('fs');
 module.exports = generators.Base.extend({
     constructor: function() {
-    	this.realCWD = process.cwd();
+        this.realCWD = process.cwd();
 
-    	generators.Base.apply(this, arguments);
+        generators.Base.apply(this, arguments);
 
-        this.argument('file', { type: String, required: true });
+        this.option('config');
+
+        this.argument('file', {
+            type: String,
+            required: true
+        });
+
+        var filePath = this.realCWD + path.sep + this.file;
+
+        this._directoryCheck(filePath);
+
+        this.pathObject = path.parse(filePath);
 
         this.subTestFolders = ['Spec', 'Setup', 'Config'];
 
-        this.GLOBAL_SPEC = 'tests/jasmine_tests/spec';
+        this.JS_GLOBAL_SPEC = 'tests/jasmine_tests/spec';
+        this.PHP_GLOBAL_SPEC = 'tests';
     },
     wiring: function() {
-        mkdirp(this.GLOBAL_SPEC + this._getFilePath(), function (err) {
-            if (err) console.error(err)
-        });
+
+        if (!this.options.config) {
+            this.subTestFolders.pop();
+        }
+
+        if (this._isPhpFile()) {
+            this._writePhpTestFiles();
+
+            return;
+        }
 
         for (var i = 0; i < this.subTestFolders.length; i++) {
-        	this._writeTestFiles(this.subTestFolders[i]);
-        }        
-    },
-    _getFilePath: function() {
-    	var locationOfFile = this.realCWD;
-    	var skinPath = locationOfFile.slice(locationOfFile.indexOf('/skin/'));
+            this._writeJSTestFile(this.subTestFolders[i]);
+        }
 
-    	return skinPath + '/' + this._getTestFolder();
     },
-    _getFileArray: function (path) {
-    	var pathArray = path.split('/');
+    _getWriteFilePath: function() {
+        var locationOfFile = this.pathObject.dir;
+        var skinPath = locationOfFile.replace(this.destinationPath(), '');
 
-    	pathArray.shift();
-
-    	return pathArray;
+        return skinPath;
     },
-    _getFileWithoutExt: function () {
-    	var fileLength = this.file.length;
-    	return this.file.substring(0, fileLength - 3);
+    _getFileWithoutExt: function() {
+        return this.pathObject.name;
     },
-    _getTestFolder: function () {
-        var folderStart = this._getFileWithoutExt();
-        var folderEnd = 'Test';
-
-    	return folderStart + folderEnd;
+    _getFileWithTestSuffix: function() {
+        return this._getFileWithoutExt() + 'Test';
     },
-    _writeTestFiles: function (testFolderEndName){
-    	var testPath = this.GLOBAL_SPEC + 
-    	    this._getFilePath() + 
-    	    '/' + 
-    	    this._getFileWithoutExt() +
-    	    testFolderEndName;
+    _writeJSTestFile: function(testFolderEndName) {
+        var testPath = this.JS_GLOBAL_SPEC +
+            this._getWriteFilePath() +
+            path.sep + 
+            this._getFileWithTestSuffix() +
+            path.sep +
+            this._getFileWithoutExt() +
+            testFolderEndName;
 
-    	this.fs.write(testPath, 'Write a test');
-    }
+        this.fs.copyTpl(
+            this.templatePath(testFolderEndName + '.js'),
+            this.destinationPath(testPath + '.js'), {
+                filename: this._getFileWithoutExt()
+            }
+        );
+    },
+    _directoryCheck: function(path) {
+        fs.stat(path, function(err, stat) {
+            if (err !== null) {
+                console.log('Cant find file');
+                process.exit();
+            }
+        });
+    },
+    _isPhpFile: function() {
+        return (this.pathObject.ext === '.php');
+    },
+    _writePhpTestFiles: function() {
+        var testPath = this.PHP_GLOBAL_SPEC +
+            this._getWriteFilePath() +
+            path.sep +
+            this.pathObject.base;
+
+        this.fs.write(testPath, 'PHP test');
+    },
 });
