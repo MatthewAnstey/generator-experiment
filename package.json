@@ -9,10 +9,8 @@
     "app"
   ],
   "dependencies": {
-    "gulp-jasmine": "^2.2.1",
     "mkdirp": "^0.5.1",
     "path": "^0.12.7",
-    "process": "^0.11.2",
-    "yeoman-generator": "^0.20.2"
+    "yeoman-generator": "^0.22.5"
   }
 }
