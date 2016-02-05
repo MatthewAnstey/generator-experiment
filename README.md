@@ -47,4 +47,8 @@ Yeoman generator to scaffold the test folder structure for our webapps.
 
 ### Troubleshooting
 
-Make sure your `node -v` and `nodenv global` are >4.0.0 as Yeoman has issues with lesser versions.
+We use `nodenv` to manage our Node.js versions. There can be a globally used version, which should be >4.0.0 as of Feb '16 (type `nodenv global` at the command line to check), and also versions specific to the project you are working on, which are indicated by the presence of a `.node-version` file in the project root and which can be verified by typing `nodenv local` at the command line.
+
+* The generator makes extensive use of Node's `path.parse()` method, which was added in Node version 12. So make sure that **`nodenv local` version is >0.12**.
+
+* **Node versions should match between where you installed the generator and the proejct**. Is the generator installed on this version of Node? Type `yo --help` within the project to see. If it's not, go back to the `generator-jasmine-test` root directory, change the `nodenv` version to match the project's (`nodenv local x.x.x`) and reinstall the generator (`npm i` followed by `npm link`). It should now run.
