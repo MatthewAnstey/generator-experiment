@@ -2,6 +2,8 @@ var generators = require('yeoman-generator');
 var path = require('path');
 var mkdirp = require('mkdirp');
 var fs = require('fs');
+var chalk = require('chalk');
+
 module.exports = generators.Base.extend({
     constructor: function() {
         this.realCWD = process.cwd();
@@ -74,7 +76,7 @@ module.exports = generators.Base.extend({
     _directoryCheck: function(path) {
         fs.stat(path, function(err, stat) {
             if (err !== null) {
-                console.log('Cant find file');
+                console.log(chalk.bold.red('Can\'t find file'));
                 process.exit();
             }
         });
@@ -89,5 +91,5 @@ module.exports = generators.Base.extend({
             this.pathObject.base;
 
         this.fs.write(testPath, 'PHP test');
-    },
+    }
 });
