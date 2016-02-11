@@ -5,6 +5,10 @@
   "keywords": [
     "yeoman-generator"
   ],
+  "scripts": {
+    "test": "mocha --reporter spec",
+    "cover": "node_modules/istanbul/lib/cli.js cover node_modules/mocha/bin/_mocha -- -R spec test/*"
+  },
   "files": [
     "app"
   ],
@@ -13,5 +17,12 @@
     "mkdirp": "^0.5.1",
     "path-parse": "^1.0.5",
     "yeoman-generator": "^0.22.5"
+  },
+  "devDependencies": {
+    "istanbul": "^0.4.2",
+    "mocha": "^2.4.5",
+    "sinon": "^1.17.3",
+    "yeoman-assert": "^2.0.0",
+    "yeoman-test": "^1.0.0"
   }
 }

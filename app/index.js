@@ -1,6 +1,7 @@
+'use strict';
+
 var generators = require('yeoman-generator');
 var path = require('path');
-// Fix for Node 0.10.x that doesn't have path.parse
 var pathParse = require('path-parse');
 var mkdirp = require('mkdirp');
 var fs = require('fs');
