@@ -9,6 +9,7 @@ describe('generator-jasmine-test:app', function () {
     
     describe('without config', function() {
         before(function(done) {
+            // need to stub in order for _directoryCheck() to run 
             sinon.stub(fs, 'stat');
             
             helpers.run(path.join(__dirname, '../app'))
@@ -16,7 +17,12 @@ describe('generator-jasmine-test:app', function () {
                 .on('end', done);
         });
         
-        it('creates Spec and Setup files', function (done) {
+        after(function() {
+            // unwrap Sinon stubbed method
+            fs.stat.restore(); 
+        });
+        
+        it('creates Spec and Setup files', function () {
             assert.file([
                 'tests/jasmine_tests/spec/indexTest/indexSpec.js',
                 'tests/jasmine_tests/spec/indexTest/indexSetup.js'
@@ -24,8 +30,10 @@ describe('generator-jasmine-test:app', function () {
             assert.noFile([
                 'tests/jasmine_tests/spec/indexTest/indexConfig.js'
             ]);
-            fs.stat.restore(); 
-            done();
+            assert.fileContent('tests/jasmine_tests/spec/indexTest/indexSpec.js',
+                                /describe\('Write a test suite', function\(\) \{/);
+            assert.fileContent('tests/jasmine_tests/spec/indexTest/indexSetup.js',
+                                /\/\/ This will run before your tests/);
         });
         
     });
@@ -40,17 +48,24 @@ describe('generator-jasmine-test:app', function () {
                 .on('end', done);
         });
         
+        after(function() {
+            fs.stat.restore(); 
+        });
         
-        it('creates Spec, Seup and Config files', function (done) {
+        it('creates Spec, Setup and Config files', function () {
             assert.file([
                 'tests/jasmine_tests/spec/indexTest/indexSpec.js',
                 'tests/jasmine_tests/spec/indexTest/indexSetup.js',
                 'tests/jasmine_tests/spec/indexTest/indexConfig.js'
             ]);
-            fs.stat.restore(); 
-            done();
+            assert.fileContent('tests/jasmine_tests/spec/indexTest/indexSpec.js',
+                                /describe\('Write a test suite', function\(\) \{/);
+            assert.fileContent('tests/jasmine_tests/spec/indexTest/indexSetup.js',
+                                /\/\/ This will run before your tests/);
+            assert.fileContent('tests/jasmine_tests/spec/indexTest/indexConfig.js',
+                                /var filePath = srcDirectory \+ '\/index\.js';/);
+            
         });
     });
-    
-    //assert file contents
+
 });
