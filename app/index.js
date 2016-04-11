@@ -27,8 +27,11 @@ module.exports = generators.Base.extend({
 
         this.subTestFolders = ['Spec', 'Setup', 'Config'];
 
-        this.JS_GLOBAL_SPEC = 'tests/jasmine_tests/spec';
-        this.PHP_GLOBAL_SPEC = 'tests';
+        this.JS_GLOBAL_SPEC = this.config.get('jasmine_spec_folder') ?
+            this.config.get('jasmine_spec_folder') : 'tests/jasmine_tests/spec';
+
+        this.PHP_GLOBAL_SPEC = this.config.get('php_spec_folder') ?
+            this.config.get('php_spec_folder') : 'php';
     },
     wiring: function() {
 
@@ -62,7 +65,7 @@ module.exports = generators.Base.extend({
     _writeJSTestFile: function(testFolderEndName) {
         var testPath = this.JS_GLOBAL_SPEC +
             this._getWriteFilePath() +
-            path.sep + 
+            path.sep +
             this._getFileWithTestSuffix() +
             path.sep +
             this._getFileWithoutExt() +
