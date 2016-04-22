@@ -1,4 +1,4 @@
-module.exports = function (globals, srcDirectory) {
+module.exports = function (globalSetup, srcDirectory) {
 
     var filePath = srcDirectory + '/<%= filename %>.js';
     var configuration = {};
@@ -10,9 +10,7 @@ module.exports = function (globals, srcDirectory) {
             helpers: [__dirname + '/<%= filename %>Setup.js'],
 
             vendor: [
-                globals.globalSetUp.beforeVendor,
-                globals.globalVendor,
-                globals.globalSetUp.afterVendor
+                globalSetup
             ]
         }
     };
