@@ -8,6 +8,7 @@ var fs = require('fs');
 var chalk = require('chalk');
 
 module.exports = generators.Base.extend({
+    directoryDoesNotExist: false,
     constructor: function() {
         this.realCWD = process.cwd();
 
@@ -21,9 +22,11 @@ module.exports = generators.Base.extend({
         });
 
         var filePath = this.realCWD + path.sep + this.file;
-
-        this._directoryCheck(filePath);
-
+        var self = this;
+        this._directoryCheck(filePath, function(err) {
+            console.log("Error: directory does not exist");
+            self.directoryDoesNotExist = true;
+        });
         this.pathObject = pathParse(filePath);
 
         this.subTestFolders = ['Spec', 'Setup', 'Config'];
@@ -32,6 +35,10 @@ module.exports = generators.Base.extend({
         this.PHP_GLOBAL_SPEC = 'tests';
     },
     wiring: function() {
+        if (this.directoryDoesNotExist) {
+            // prefer this to process.exit() as it doesn't completely kill node
+            return;
+        }
 
         if (!this.options.config) {
             this.subTestFolders.pop();
@@ -76,11 +83,10 @@ module.exports = generators.Base.extend({
             }
         );
     },
-    _directoryCheck: function(path) {
+    _directoryCheck: function(path, callback) {
         fs.stat(path, function(err, stat) {
-            if (err !== null) {
-                console.log(chalk.bold.red('Can\'t find file'));
-                process.exit();
+            if (err) {
+                callback(err);
             }
         });
     },

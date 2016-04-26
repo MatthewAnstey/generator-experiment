@@ -2,7 +2,13 @@
 var path = require('path');
 var assert = require('yeoman-assert');
 var helpers = require('yeoman-test');
+// These are mostly for testing console.log output
 var sinon = require('sinon');
+var chai = require('chai');
+var expect = require('chai').expect;
+var sinonChai = require("sinon-chai");
+chai.use(sinonChai);
+
 var fs = require('fs');
 
 describe('generator-jasmine-test:app', function () {
@@ -65,6 +71,33 @@ describe('generator-jasmine-test:app', function () {
             assert.fileContent('tests/jasmine_tests/spec/indexTest/indexConfig.js',
                                 /var filePath = srcDirectory \+ '\/index\.js';/);
             
+        });
+    });
+
+    describe('File does not exist', function() {
+        var log;
+
+        before(function(done) {
+            // First stub out console.log so we can record what's printed out
+            log = console.log;
+            // fix so that Mocha reporter still outputs stuff to console
+            sinon.stub(console, 'log', function() {
+              return log.apply(log, arguments);
+            });
+
+            helpers.run(path.join(__dirname, '../app'))
+                .withArguments(['index.js'])
+                .on('end', done);
+        });
+
+        it('logs a message to the user', function() {
+            assert.noFile([
+                'tests/jasmine_tests/spec/indexTest/indexSpec.js',
+                'tests/jasmine_tests/spec/indexTest/indexSetup.js',
+                'tests/jasmine_tests/spec/indexTest/indexConfig.js'
+            ]);
+            expect(console.log).to.have.been.called;
+            expect(console.log).to.have.been.calledWith("Error: directory does not exist");
         });
     });
 

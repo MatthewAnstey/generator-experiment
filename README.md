@@ -52,3 +52,9 @@ We use `nodenv` to manage our Node.js versions. There can be a globally used ver
 * The generator makes extensive use of Node's `path.parse()` method, which was added in Node version 12. The `path-parse` package is a polyfill for users with <v0.12 that falls back to the native method if it exists.
 
 * **Node versions should match between where you installed the generator and the proejct**. Is the generator installed on this version of Node? Type `yo --help` within the project to see. If it's not, go back to the `generator-jasmine-test` root directory, change the `nodenv` version to match the project's (`nodenv local x.x.x`) and reinstall the generator (`npm i` followed by `npm link`). It should now run.
+
+## Run the tests
+
+Clone the project, install all the dependencies with `npm install`, the run `npm test`.
+
+Generate coverage reports with `npm run cover`.
